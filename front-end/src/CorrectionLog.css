@@ -1,0 +1,140 @@
+.correction-log-container {
+    /* height: 140vh; */
+    /* min-height: 100px; */
+    /* overflow: hidden; */
+}
+
+.correction-log-title {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 50px;
+}
+
+.error-dimension {
+    display: none;
+    font-weight: bold;
+    position: relative;
+    font-size: 22px;
+    text-align: center;
+}
+
+.error-dimension:after {
+    content: "";
+    display: inline-block;
+
+    width: 10px;
+    height: 10px;
+    background-color: #000;
+    /* border: 1px solid #000; */
+
+    position: absolute;
+    margin-left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border-radius: 50%;
+    /* top: 5px; */
+    /* top: 100%;
+    left: 0;
+    z-index: 1; */
+}
+
+.error-dimension:nth-of-type(1):after {
+    background-color: #FF4141;
+}
+
+.error-dimension:nth-of-type(2):after {
+    background-color: #FF8C00;
+}
+
+.error-dimension:nth-of-type(3):after {
+    background-color: #FFFF00;
+}
+
+.error-dimension:nth-of-type(4):after {
+    background-color: #FF87CF;
+}
+
+.error-details {
+    text-align: center;
+}
+
+.no-errors {
+    font-weight: bold;
+    text-align: center;
+}
+
+.download-file {
+    text-align: center;
+}
+
+.download-file-text {
+    /* margin-top: 50px; */
+    display: inline-block;
+    
+}
+
+.download-file-link {
+    cursor: pointer;
+    color: blue;
+    margin-left: 5px;
+    position: relative;
+    transition: 0.1s ease;
+}
+
+.download-file-link:hover {
+    color: #79acc8;
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0 70px 0;
+}
+
+.download-btn {
+    outline: none;
+    background-color: #4A4A4A;
+
+    box-shadow: 0 4px 4px 0 #cacaca;
+
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff;
+
+    display: block;
+    transition: transform 1s ease, background-color 0.1s ease;
+}
+
+.download-btn:hover {
+    background-color: #626262;
+}
+
+.return-btn {
+    outline: none;
+    border: 1 solid #4A4A4A;
+    background-color: #fff;
+
+    box-shadow: 0 4px 4px 0 #cacaca;
+
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+
+    /* position: absolute; */
+    /* display: inline-block; */
+    transition: transform 1s ease, background-color 0.1s ease;
+}
+
+.return-btn:hover {
+    background-color: #e1e1e1;
+}
+
+.download-btn, .return-btn {
+    width: 175px;
+    height: 50px;
+    margin: 0 50px;
+}

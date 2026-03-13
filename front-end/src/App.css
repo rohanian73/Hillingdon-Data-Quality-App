@@ -1,0 +1,17 @@
+body {
+  /* background-color: #4a4a4a;
+  color: #fff; */
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.pageTitle {
+  font-family: "Open Sans", sans-serif;
+  font-size: 36px;
+  text-align: center;
+
+  margin: 50px 0;
+}
