@@ -61,7 +61,7 @@ def root():
     return {"Hello": "World"}
 
 
-@app.post("/file")
+@app.post("/analyse_data")
 async def read_file(file: UploadFile = File(...)):
     global highlighted_excel_sheet
     global corrected_excel_sheet
@@ -73,9 +73,6 @@ async def read_file(file: UploadFile = File(...)):
 
     contents = await file.read()
     fileName = file.filename
-
-    # file_id = str(uuid.uuid4())
-    # path = f"{tempfile.gettempdir()}/{file_id}.xlsx"
 
     excel_data = None
 
@@ -273,44 +270,6 @@ async def read_file(file: UploadFile = File(...)):
                 inconsist_err_cells.append((i + 2, id_index + 1))
 
 
-        # KMeans
-        # scaler = StandardScaler()
-        # X_scaled = scaler.fit_transform(features)
-        # kmeans = KMeans(n_clusters=3, random_state=42)
-        # clusters = kmeans.fit_predict(X_scaled)
-        # print("Clusters:", clusters)
-
-        # Labelling
-        # valid_clusters = [1]
-        # cluster_counts = Counter(clusters)
-        # valid_cluster = cluster_counts.most_common(1)[0][0]
-        #
-        # valid_ids = []
-        # invalid_ids = []
-        #
-        # for i, cluster in enumerate(clusters):
-        #     if cluster == valid_cluster:
-        #         valid_ids.append(ids[i])
-        #     else:
-        #         invalid_ids.append(ids[i])
-        #
-        # print("Valid ids:", valid_ids)
-        # print("Invalid ids:", invalid_ids)
-
-        # Training a classifier
-        # all_ids = valid_ids + invalid_ids
-        # labels = [1] * len(invalid_ids) + [0] * len(valid_ids)
-
-        # ids_train = pd.DataFrame(zip(valid_ids+invalid_ids, [1] * len(invalid_ids) + [0] * len(valid_ids)), columns=["id", "label"])
-
-        # X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, shuffle=True, random_state=42)
-        # random_forest_classifier = RandomForestClassifier(n_estimators=100, max_features=int(np.sqrt(len(features))), random_state=42)
-        # random_forest_classifier.fit(X_train, y_train)
-        #
-        # y_pred = random_forest_classifier.predict(X_test)
-        # print("Classification report: ", classification_report(y_test, y_pred))
-
-
     # Name Validation
     name_indexes = []
     for column in columns:
@@ -318,13 +277,6 @@ async def read_file(file: UploadFile = File(...)):
             name_indexes.append(columns.index(column))
 
     for name_index in name_indexes:
-
-        # word_counts = df[columns[name_index]].dropna().apply(lambda x: len(str(x).split()))
-        # avg_word_num = word_counts.mean()
-        # avg_word_len = (df[columns[name_index]].dropna()
-        #                 .apply(lambda x: sum(len(w) for w in x.split()) / len(x.split())).mean())
-        #
-        # digit_ratio = df[columns[name_index]].dropna().apply(lambda x: sum(c.isdigit() for c in str(x)) / len(str(x))).mean()
 
         org_keywords = [
             "Ltd",
@@ -340,7 +292,7 @@ async def read_file(file: UploadFile = File(...)):
         ]
 
         org_ratio = df[columns[name_index]].dropna().apply(lambda x: any(k.lower() in x.lower() for k in org_keywords)).mean()
-        print(name_index, org_ratio)
+        # print(name_index, org_ratio)
 
         # Person Name
         if any(word in columns[name_index].lower() for word in {"person", "first", "last"}) or org_ratio == 0:
@@ -371,7 +323,7 @@ async def read_file(file: UploadFile = File(...)):
                     similar_org_names = []
 
                     for i, similarity_score in enumerate(similarities[rows.index(row)]):
-                        if similarity_score > 0.7 and similarity_score < 0.99:
+                        if similarity_score > 0.85 and similarity_score < 0.99:
                             similar_org_names.append(org_names[i])
 
                     matching_similarities[1][rows.index(row)] = similar_org_names
@@ -431,17 +383,6 @@ async def read_file(file: UploadFile = File(...)):
                                 ws_corrected.cell(rows.index(row) + 2, email_index + 1).value = (
                                     row[email_index].split("@")[0] + "@" + valid_email_domain)
                             break
-
-
-    # corrected_df = pd.DataFrame({
-    #     "columns": columns,
-    #     "rows": fixed_rows
-    # })
-    #
-    # corrected_df_csv = corrected_df.to_csv(index=False)
-
-    # Date Validation
-    # if date is not in UK format --> highlight as inconsistency and change format to UK
 
 
     # Address Validation
@@ -742,7 +683,7 @@ async def read_file(file: UploadFile = File(...)):
                 case=False,
                 na=False
             ).mean()
-            print(county_presence_rate)
+            # print(county_presence_rate)
 
             for row in rows:
                 if row[address_column_ind]:
@@ -764,48 +705,6 @@ async def read_file(file: UploadFile = File(...)):
 
                     check_address(address, rows.index(row), address_column_ind)
 
-            # print(inconsist_err_cells)
-
-
-
-    # nlp = spacy.load("en_core_web_sm")
-
-    # TRAIN_DATA = [
-    #     (
-    #         "11 Barnacre Close, Cowley, Uxbridge, Middx, UB8 3TD",
-    #         {
-    #             "entities": [
-    #                 (0, 2, "HOUSE_NUMBER"),
-    #                 (3, 20, "STREET"),
-    #                 (22, 29, "DISTRICT"),
-    #                 (31, 39, "POST_TOWN"),
-    #                 (41, 46, "COUNTY"),
-    #                 (48, 56, "POSTCODE")
-    #             ]
-    #         }
-    #     )
-    # ]
-
-    # nlp = spacy.blank("en")
-    # ner = nlp.add_pipe("ner")
-    #
-    # labels = ["HOUSE_NUMBER", "STREET", "DISTRICT", "POST_TOWN", "COUNTY", "POSTCODE"]
-    #
-    # for label in labels:
-    #     ner.add_label(label)
-    #
-    # optimizer = nlp.begin_training()
-    #
-    # for i in range(30):
-    #     for text, annotations in TRAIN_DATA:
-    #         doc = nlp.make_doc(text)
-    #         example = Example.from_dict(doc, annotations)
-    #         nlp.update([example], sgd=optimizer)
-    #
-    # doc = nlp("20 High St, Uxbridge, Middlesex")
-    #
-    # for ent in doc.ents:
-    #     print(ent.text, ent.label_)
 
     # Highlight Excel file
     if excel_data:
@@ -897,7 +796,7 @@ async def read_file(file: UploadFile = File(...)):
     # json_data = list(csv_reader)
     # return {"headers": json_data[0], "data": json_data}
 
-@app.post("/file2")
+@app.get("/highlighted_file")
 async def get_file():
     if highlighted_excel_sheet:
         return StreamingResponse(
@@ -908,7 +807,7 @@ async def get_file():
             }
         )
 
-@app.get("/file3")
+@app.get("/corrected_file")
 async def get_corrected_file():
     if corrected_excel_sheet:
         return StreamingResponse(
