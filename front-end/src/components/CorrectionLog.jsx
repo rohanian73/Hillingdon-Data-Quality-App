@@ -9,7 +9,7 @@ export default function CorrectionLog() {
 
   useEffect(() => {
     if (analysisData != null) {
-      console.log(analysisData);
+      // console.log(analysisData);
 
       // Inaccuracy
       let inaccurateErrors = analysisData.inaccurateErr;
@@ -23,11 +23,6 @@ export default function CorrectionLog() {
       if (document.getElementById("inaccuracy").innerHTML.length != 0) {
         document.getElementById("inaccurateTitle").style.display = "block";
       }
-
-      // if (document.getElementById("inaccuracy").innerHTML.length == 0) {
-      //   document.getElementById("inaccuracy").innerHTML =
-      //     "No inaccurate records identified.";
-      // }
 
       // Incompleteness
       let incompleteErrors = analysisData.incompleteErr;
@@ -94,10 +89,10 @@ export default function CorrectionLog() {
   const downloadCorrectedFile = async () => {
     await axios({
       method: "get",
-      url: "http://localhost:8000/file3",
+      url: "http://localhost:8000/corrected_file",
       responseType: "blob",
     }).then((correctedFile) => {
-      console.log(correctedFile.data.type);
+      // console.log(correctedFile.data.type);
       if (correctedFile.data.type.includes("csv")) {
         const url = window.URL.createObjectURL(new Blob([correctedFile.data]));
         const link = document.createElement("a");
