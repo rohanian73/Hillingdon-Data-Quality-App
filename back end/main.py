@@ -147,8 +147,8 @@ async def read_file(file: UploadFile = File(...)):
     duplicateErr = len(duplicates)
     duplicate_err_rows = duplicates.index.tolist()
 
-    for row in duplicate_err_rows:
-        ws_corrected.delete_rows(row + 2, 1)
+    # for row in duplicate_err_rows:
+    #     ws_corrected.delete_rows(row + 2, 1)
 
     # ID Validation
 
@@ -180,10 +180,17 @@ async def read_file(file: UploadFile = File(...)):
         # Learn features
         features = []
         for row in rows:
-            if row[id_index] is not None:
+            if row[id_index] is None or len(row[id_index]) == 0:
+                incompleteErr[1][id_index] += 1
+                incomplete_err_cells.append((rows.index(row) + 2, id_index + 1))
+            else:
                 cleaned_id = str(row[id_index]).strip()
 
                 length = len(cleaned_id)
+                # if len(cleaned_id) > 0:
+                #     length = len(cleaned_id)
+                # else:
+                #     length = len(row[id_index])
 
                 num_digits = len(re.findall(r'\d', cleaned_id))
                 digits_ratio = num_digits / length
